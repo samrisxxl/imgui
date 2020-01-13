@@ -3912,7 +3912,6 @@ void ImGui::Shutdown(ImGuiContext* context)
 
     g.PrivateClipboard.clear();
     g.InputTextState.ClearFreeMemory();
-    g.MultiSelectScopeWindow = NULL;
 
     g.SettingsWindows.clear();
     g.SettingsHandlers.clear();
@@ -8076,6 +8075,7 @@ static void ImGui::NavProcessItem(ImGuiWindow* window, const ImRect& nav_bb, con
             result->ID = id;
             result->FocusScopeId = window->DC.NavFocusScopeIdCurrent;
             result->RectRel = nav_bb_rel;
+            result->HasSelectionData = (g.NextItemData.Flags & ImGuiNextItemDataFlags_HasSelectionData) != 0;
         }
 
         // Features like PageUp/PageDown need to maintain a separate score for the visible set of items.
@@ -8089,6 +8089,7 @@ static void ImGui::NavProcessItem(ImGuiWindow* window, const ImRect& nav_bb, con
                     result->ID = id;
                     result->FocusScopeId = window->DC.NavFocusScopeIdCurrent;
                     result->RectRel = nav_bb_rel;
+                    result->HasSelectionData = (g.NextItemData.Flags & ImGuiNextItemDataFlags_HasSelectionData) != 0;
                 }
     }
 
@@ -8624,7 +8625,7 @@ static void ImGui::NavUpdateMoveResult()
         // Don't set NavJustMovedToId if just landed on the same spot (which may happen with ImGuiNavMoveFlags_AllowCurrentNavId)
         g.NavJustMovedToId = result->ID;
         g.NavJustMovedToFocusScopeId = result->FocusScopeId;
-
+        g.NavJustMovedToHasSelectionData = result->HasSelectionData;
     }
     SetNavIDWithRectRel(result->ID, g.NavLayer, result->FocusScopeId, result->RectRel);
     g.NavMoveFromClampedRefRect = false;
